@@ -1,6 +1,12 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const getAI = () => {
+  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 export const generateAssistantResponse = async (
   query: string,
@@ -44,6 +50,11 @@ export const generateAssistantResponse = async (
     
     If the user asks about location or community context, you MUST use the googleMaps tool to provide real-world data about the South End of Albany.
   `;
+
+  const ai = getAI();
+  if (!ai) {
+    return "The AI assistant is not configured for this demo. Add your Gemini API key to enable it.";
+  }
 
   try {
     const contents = history.map(msg => ({
