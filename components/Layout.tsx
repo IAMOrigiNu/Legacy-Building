@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Section } from '../types';
 
 interface LayoutProps {
@@ -8,6 +8,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ currentSection, setSection, children }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuItems = [
     { id: Section.OVERVIEW, label: 'Executive Summary', icon: 'M4 6h16M4 12h16M4 18h7' },
     { id: Section.TECH_STACK, label: 'Tech Stack', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
@@ -78,10 +79,61 @@ const Layout: React.FC<LayoutProps> = ({ currentSection, setSection, children })
                />
                <h1 className="text-lg font-serif font-bold text-legacy-gold">The Legacy Building</h1>
              </div>
-             <button className="text-gray-300" onClick={() => {/* Simple mobile toggle logic would go here in real app */}}>
+             <button 
+               className="text-gray-300 p-2 -mr-2 hover:bg-gray-800 rounded-lg transition-colors" 
+               onClick={() => setMobileMenuOpen(true)}
+               aria-label="Open menu"
+             >
                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
              </button>
         </div>
+
+        {/* Mobile menu overlay */}
+        {mobileMenuOpen && (
+          <>
+            <div 
+              className="fixed inset-0 bg-black/60 z-40 md:hidden" 
+              onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+            <div className="fixed inset-y-0 right-0 w-64 bg-legacy-gray border-l border-gray-800 z-50 md:hidden flex flex-col shadow-xl">
+              <div className="p-4 border-b border-gray-800 flex justify-between items-center">
+                <span className="font-semibold text-white">Menu</span>
+                <button 
+                  className="text-gray-300 p-2 -mr-2 hover:bg-gray-800 rounded-lg transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <nav className="flex-1 overflow-y-auto py-4">
+                <ul className="space-y-2 px-3">
+                  {menuItems.map((item) => (
+                    <li key={item.id}>
+                      <button
+                        onClick={() => {
+                          setSection(item.id);
+                          setMobileMenuOpen(false);
+                        }}
+                        className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 ${
+                          currentSection === item.id 
+                            ? 'bg-legacy-gold text-black shadow-lg shadow-yellow-900/20' 
+                            : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                        }`}
+                      >
+                        <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                        </svg>
+                        {item.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </>
+        )}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}
         </div>
