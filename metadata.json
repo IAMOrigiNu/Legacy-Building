@@ -1,0 +1,7 @@
+{
+  "name": "The Legacy Building Proposal",
+  "description": "Interactive website proposal and roadmap for The Legacy Building, featuring detailed tech stack analysis, timeline, and maintenance cost options.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
