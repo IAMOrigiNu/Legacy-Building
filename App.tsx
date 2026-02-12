@@ -4,7 +4,7 @@ import Overview from './components/Overview';
 import TechStack from './components/TechStack';
 import Roadmap from './components/Roadmap';
 import CostComparison from './components/CostComparison';
-import AiAssistant from './components/AiAssistant';
+import FAQ from './components/FAQ';
 import { Section } from './types';
 
 const App: React.FC = () => {
@@ -20,8 +20,8 @@ const App: React.FC = () => {
         return <Roadmap />;
       case Section.COSTS:
         return <CostComparison />;
-      case Section.AI_ASSISTANT:
-        return <AiAssistant />;
+      case Section.FAQ:
+        return <FAQ />;
       default:
         return <Overview setSection={setSection} />;
     }

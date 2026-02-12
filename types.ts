@@ -3,7 +3,7 @@ export enum Section {
   TECH_STACK = 'tech_stack',
   ROADMAP = 'roadmap',
   COSTS = 'costs',
-  AI_ASSISTANT = 'ai_assistant'
+  FAQ = 'faq'
 }
 
 export interface RoadmapItem {
@@ -26,9 +26,3 @@ export interface MaintenanceOption {
   isVendorCost?: boolean;
 }
 
-export interface ChatMessage {
-  id: string;
-  role: 'user' | 'model';
-  text: string;
-  isThinking?: boolean;
-}
