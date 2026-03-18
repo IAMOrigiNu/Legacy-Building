@@ -1,35 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
-import Overview from './components/Overview';
-import TechStack from './components/TechStack';
-import Roadmap from './components/Roadmap';
-import CostComparison from './components/CostComparison';
-import FAQ from './components/FAQ';
-import { Section } from './types';
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import RealEstatePage from './pages/RealEstatePage';
+import PropertyManagementPage from './pages/PropertyManagementPage';
+import BuildingServicesPage from './pages/BuildingServicesPage';
+import ContactPage from './pages/ContactPage';
 
 const App: React.FC = () => {
-  const [currentSection, setSection] = useState<Section>(Section.OVERVIEW);
-
-  const renderSection = () => {
-    switch (currentSection) {
-      case Section.OVERVIEW:
-        return <Overview setSection={setSection} />;
-      case Section.TECH_STACK:
-        return <TechStack />;
-      case Section.ROADMAP:
-        return <Roadmap />;
-      case Section.COSTS:
-        return <CostComparison />;
-      case Section.FAQ:
-        return <FAQ />;
-      default:
-        return <Overview setSection={setSection} />;
-    }
-  };
-
   return (
-    <Layout currentSection={currentSection} setSection={setSection}>
-      {renderSection()}
+    <Layout>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/real-estate-brokerage" element={<RealEstatePage />} />
+        <Route path="/property-management" element={<PropertyManagementPage />} />
+        <Route path="/building-services" element={<BuildingServicesPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </Layout>
   );
 };

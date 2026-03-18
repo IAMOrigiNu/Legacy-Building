@@ -1,143 +1,118 @@
 import React, { useState } from 'react';
-import { Section } from '../types';
+import { Link, useLocation } from 'react-router-dom';
 
-interface LayoutProps {
-  currentSection: Section;
-  setSection: (section: Section) => void;
-  children: React.ReactNode;
-}
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-const Layout: React.FC<LayoutProps> = ({ currentSection, setSection, children }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const menuItems = [
-    { id: Section.OVERVIEW, label: 'Executive Summary', icon: 'M4 6h16M4 12h16M4 18h7' },
-    { id: Section.TECH_STACK, label: 'Tech Stack', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
-    { id: Section.ROADMAP, label: '30-Day Roadmap', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
-    { id: Section.COSTS, label: 'Maintenance ROI', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { id: Section.FAQ, label: 'FAQ', icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+  const navLinks = [
+    { label: 'Property Management', path: '/property-management' },
+    { label: 'Real Estate Brokerage', path: '/real-estate-brokerage' },
+    { label: 'Building Services', path: '/building-services' },
+    { label: 'About', path: '/about' },
   ];
 
-  const logoUrl = "https://image2url.com/r2/default/images/1770931202977-ebccf21d-00f3-4837-a920-7d85000a0a15.blob";
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-legacy-dark text-legacy-light">
-      {/* Sidebar */}
-      <aside className="w-64 bg-legacy-gray flex-shrink-0 border-r border-gray-800 hidden md:flex flex-col">
-        <div className="p-6 border-b border-gray-800 flex flex-col items-center text-center">
-          <div className="w-32 h-32 mb-4 relative flex items-center justify-center">
-            <img 
-              src={logoUrl} 
-              alt="House of Willson Crest" 
-              className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(212,175,55,0.15)]"
-            />
-          </div>
-          <h1 className="text-2xl font-serif font-bold text-legacy-gold leading-tight">The Legacy<br/>Building</h1>
-          <p className="text-xs text-gray-400 mt-2">Digital Proposal v1.0</p>
-        </div>
-        
-        <nav className="flex-1 overflow-y-auto py-4">
-          <ul className="space-y-2 px-3">
-            {menuItems.map((item) => (
-              <li key={item.id}>
-                <button
-                  onClick={() => setSection(item.id)}
-                  className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                    currentSection === item.id 
-                      ? 'bg-legacy-gold text-black shadow-lg shadow-yellow-900/20' 
-                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                  }`}
-                >
-                  <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                  </svg>
-                  {item.label}
-                </button>
-              </li>
+    <div className="min-h-screen bg-surface font-body">
+      <nav className="bg-white/80 backdrop-blur-md top-0 sticky z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+          <Link to="/" className="text-2xl font-serif font-bold text-blue-950 hover:opacity-80 transition-opacity">
+            The Legacy Building
+          </Link>
+          <div className="hidden md:flex gap-8 items-center">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`font-serif text-lg tracking-tight transition-colors ${
+                  isActive(link.path)
+                    ? 'text-blue-900 font-bold border-b-2 border-blue-900 pb-1'
+                    : 'text-slate-600 hover:text-blue-900'
+                }`}
+              >
+                {link.label}
+              </Link>
             ))}
-          </ul>
-        </nav>
-
-        <div className="p-4 border-t border-gray-800">
-          <div className="flex items-center">
-             <div className="w-8 h-8 rounded-full bg-legacy-gold flex items-center justify-center text-black font-bold text-xs">O</div>
-             <div className="ml-3">
-               <p className="text-sm font-medium">Ocasio Willson</p>
-               <p className="text-xs text-gray-500">Lead Developer</p>
-             </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link
+              to="/contact"
+              className="bg-primary text-on-primary px-6 py-2 rounded-xl font-bold active:scale-95 duration-150 ease-in-out transition-all hover:bg-primary-container"
+            >
+              Contact Us
+            </Link>
+            <button
+              className="md:hidden text-primary"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+            >
+              <span className="material-symbols-outlined">{menuOpen ? 'close' : 'menu'}</span>
+            </button>
           </div>
         </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto relative">
-        <div className="md:hidden p-4 bg-legacy-gray border-b border-gray-800 flex justify-between items-center sticky top-0 z-20">
-             <div className="flex items-center">
-               <img 
-                  src={logoUrl} 
-                  alt="Logo" 
-                  className="w-10 h-10 mr-3 object-contain"
-               />
-               <h1 className="text-lg font-serif font-bold text-legacy-gold">The Legacy Building</h1>
-             </div>
-             <button 
-               className="text-gray-300 p-2 -mr-2 hover:bg-gray-800 rounded-lg transition-colors" 
-               onClick={() => setMobileMenuOpen(true)}
-               aria-label="Open menu"
-             >
-               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-             </button>
-        </div>
-
-        {/* Mobile menu overlay */}
-        {mobileMenuOpen && (
-          <>
-            <div 
-              className="fixed inset-0 bg-black/60 z-40 md:hidden" 
-              onClick={() => setMobileMenuOpen(false)}
-              aria-hidden="true"
-            />
-            <div className="fixed inset-y-0 right-0 w-64 bg-legacy-gray border-l border-gray-800 z-50 md:hidden flex flex-col shadow-xl">
-              <div className="p-4 border-b border-gray-800 flex justify-between items-center">
-                <span className="font-semibold text-white">Menu</span>
-                <button 
-                  className="text-gray-300 p-2 -mr-2 hover:bg-gray-800 rounded-lg transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                  aria-label="Close menu"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-              </div>
-              <nav className="flex-1 overflow-y-auto py-4">
-                <ul className="space-y-2 px-3">
-                  {menuItems.map((item) => (
-                    <li key={item.id}>
-                      <button
-                        onClick={() => {
-                          setSection(item.id);
-                          setMobileMenuOpen(false);
-                        }}
-                        className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                          currentSection === item.id 
-                            ? 'bg-legacy-gold text-black shadow-lg shadow-yellow-900/20' 
-                            : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                        }`}
-                      >
-                        <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                        </svg>
-                        {item.label}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
-          </>
+        {menuOpen && (
+          <div className="md:hidden bg-white border-t border-slate-100 px-8 py-6 flex flex-col gap-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                onClick={() => setMenuOpen(false)}
+                className={`font-serif text-lg tracking-tight transition-colors ${
+                  isActive(link.path) ? 'text-blue-900 font-bold' : 'text-slate-600 hover:text-blue-900'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
         )}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {children}
+      </nav>
+
+      <main>{children}</main>
+
+      <footer className="bg-slate-100 pt-16 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto px-8">
+          <div className="col-span-1">
+            <div className="text-xl font-serif font-black text-blue-950 mb-6">The Legacy Building</div>
+            <p className="text-slate-500 text-sm tracking-wide leading-relaxed">
+              Preserving the past, cultivating the future. Your partner in Albany's revitalization.
+            </p>
+          </div>
+          <div>
+            <h5 className="text-blue-950 font-bold mb-6 text-sm uppercase tracking-widest">Our Services</h5>
+            <ul className="space-y-4">
+              <li><Link className="text-slate-500 hover:text-blue-700 transition-opacity duration-300 text-sm" to="/property-management">Property Management</Link></li>
+              <li><Link className="text-slate-500 hover:text-blue-700 transition-opacity duration-300 text-sm" to="/real-estate-brokerage">Brokerage</Link></li>
+              <li><Link className="text-slate-500 hover:text-blue-700 transition-opacity duration-300 text-sm" to="/building-services">Building Services</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="text-blue-950 font-bold mb-6 text-sm uppercase tracking-widest">Company</h5>
+            <ul className="space-y-4">
+              <li><Link className="text-slate-500 hover:text-blue-700 transition-opacity duration-300 text-sm" to="/about">About Us</Link></li>
+              <li><Link className="text-slate-500 hover:text-blue-700 transition-opacity duration-300 text-sm" to="/privacy">Privacy Policy</Link></li>
+              <li><Link className="text-slate-500 hover:text-blue-700 transition-opacity duration-300 text-sm" to="/contact">Contact</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="text-blue-950 font-bold mb-6 text-sm uppercase tracking-widest">Connect</h5>
+            <div className="flex gap-4">
+              <a className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center hover:bg-blue-900 hover:text-white transition-all" href="#" aria-label="Share">
+                <span className="material-symbols-outlined text-xl">share</span>
+              </a>
+              <a className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center hover:bg-blue-900 hover:text-white transition-all" href="#" aria-label="Email">
+                <span className="material-symbols-outlined text-xl">alternate_email</span>
+              </a>
+            </div>
+          </div>
         </div>
-      </main>
+        <div className="max-w-7xl mx-auto px-8 mt-16 pt-8 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-slate-500 text-xs">© 2024 The Legacy Building. All rights reserved.</p>
+          <p className="text-slate-500 text-xs italic">An abundance mindset community partner.</p>
+        </div>
+      </footer>
     </div>
   );
 };

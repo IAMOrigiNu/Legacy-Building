@@ -3,17 +3,22 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(() => {
-    return {
-      base: '/Legacy-Building/',
-      server: {
-        port: 3000,
-        host: '0.0.0.0',
+  return {
+    // Base path set to '/' for Cloudflare Pages (custom domain deployment)
+    base: '/',
+    server: {
+      port: 3000,
+      host: '0.0.0.0',
+    },
+    plugins: [react()],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, '.'),
       },
-      plugins: [react()],
-      resolve: {
-        alias: {
-          '@': path.resolve(__dirname, '.'),
-        }
-      }
-    };
+    },
+    build: {
+      outDir: 'dist',
+      sourcemap: false,
+    },
+  };
 });
